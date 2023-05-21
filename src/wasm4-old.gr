@@ -1,0 +1,262 @@
+import WasmI32 from "runtime/unsafe/wasmi32"
+import DataStructures, {
+  untagSimpleNumber,
+  tagSimpleNumber,
+} from "runtime/dataStructures"
+
+//
+// WASM-4: https://wasm4.org/docs
+
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │                                                                           │
+// │ Platform Constants                                                        │
+// │                                                                           │
+// └───────────────────────────────────────────────────────────────────────────┘
+
+export let _SCREEN_SIZE = 160
+
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │                                                                           │
+// │ Memory Addresses                                                          │
+// │                                                                           │
+// └───────────────────────────────────────────────────────────────────────────┘
+
+export let _PALETTE = 0x04
+export let _DRAW_COLORS = 0x14
+export let _GAMEPAD1 = 0x16
+export let _GAMEPAD2 = 0x17
+export let _GAMEPAD3 = 0x18
+export let _GAMEPAD4 = 0x19
+export let _MOUSE_X = 0x1a
+export let _MOUSE_Y = 0x1c
+export let _MOUSE_BUTTONS = 0x1e
+export let _SYSTEM_FLAGS = 0x1f
+export let _FRAMEBUFFER = 0xa0
+
+export let _BUTTON_1 = 1
+export let _BUTTON_2 = 2
+export let _BUTTON_LEFT = 16
+export let _BUTTON_RIGHT = 32
+export let _BUTTON_UP = 64
+export let _BUTTON_DOWN = 128
+
+export let _MOUSE_LEFT = 1
+export let _MOUSE_RIGHT = 2
+export let _MOUSE_MIDDLE = 4
+
+export let _SYSTEM_PRESERVE_FRAMEBUFFER = 1
+export let _SYSTEM_HIDE_GAMEPAD_OVERLAY = 2
+
+export let _BLIT_1BPP = 0l
+export let _BLIT_2BPP = 1l
+export let _BLIT_FLIP_X = 2l
+export let _BLIT_FLIP_Y = 4l
+export let _BLIT_ROTATE = 8l
+
+export let _TONE_PULSE1 = 0l
+export let _TONE_PULSE2 = 1l
+export let _TONE_TRIANGLE = 2l
+export let _TONE_NOISE = 3l
+export let _TONE_MODE1 = 0l
+export let _TONE_MODE2 = 4l
+export let _TONE_MODE3 = 8l
+export let _TONE_MODE4 = 12l
+
+@unsafe
+export let gamepad1 = () => {
+  tagSimpleNumber(WasmI32.load8U(untagSimpleNumber(_GAMEPAD1), 0n))
+}
+
+@unsafe
+export let drawColors = (color: Number) => {
+  WasmI32.store16(untagSimpleNumber(_DRAW_COLORS), untagSimpleNumber(color), 0n)
+}
+
+import foreign wasm blit: (
+  WasmI32,
+  WasmI32,
+  WasmI32,
+  WasmI32,
+  WasmI32,
+  WasmI32,
+) -> Void from "env"
+@unsafe
+export let blit =
+  (
+    sprite: Bytes,
+    x: Number,
+    y: Number,
+    width: Number,
+    height: Number,
+    flags: Int32,
+  ) => {
+  blit(
+    WasmI32.add(WasmI32.fromGrain(sprite), 8n),
+    untagSimpleNumber(x),
+    untagSimpleNumber(y),
+    untagSimpleNumber(width),
+    untagSimpleNumber(height),
+    WasmI32.load(WasmI32.fromGrain(flags), 8n)
+  )
+}
+
+import foreign wasm blitSub: (
+  WasmI32,
+  WasmI32,
+  WasmI32,
+  WasmI32,
+  WasmI32,
+  WasmI32,
+  WasmI32,
+  WasmI32,
+  WasmI32,
+) -> Void from "env"
+@unsafe
+export let blitSub =
+  (
+    sprite: Bytes,
+    x: Number,
+    y: Number,
+    width: Number,
+    height: Number,
+    srcX: Number,
+    srcY: Number,
+    stride: Number,
+    flags: Int32,
+  ) => {
+  blitSub(
+    WasmI32.add(WasmI32.fromGrain(sprite), 8n),
+    untagSimpleNumber(x),
+    untagSimpleNumber(y),
+    untagSimpleNumber(width),
+    untagSimpleNumber(height),
+    untagSimpleNumber(srcX),
+    untagSimpleNumber(srcY),
+    untagSimpleNumber(stride),
+    WasmI32.load(WasmI32.fromGrain(flags), 8n)
+  )
+}
+
+import foreign wasm line: (
+  WasmI32,
+  WasmI32,
+  WasmI32,
+  WasmI32,
+) -> Void from "env"
+@unsafe
+export let line = (x1: Number, y1: Number, x2: Number, y2: Number) => {
+  line(
+    untagSimpleNumber(x1),
+    untagSimpleNumber(y1),
+    untagSimpleNumber(x2),
+    untagSimpleNumber(y2)
+  )
+}
+
+import foreign wasm hline: (WasmI32, WasmI32, WasmI32) -> Void from "env"
+@unsafe
+export let hline = (x: Number, y: Number, len: Number) => {
+  hline(untagSimpleNumber(x), untagSimpleNumber(y), untagSimpleNumber(len))
+}
+
+import foreign wasm vline: (WasmI32, WasmI32, WasmI32) -> Void from "env"
+@unsafe
+export let vline = (x: Number, y: Number, len: Number) => {
+  vline(untagSimpleNumber(x), untagSimpleNumber(y), untagSimpleNumber(len))
+}
+
+import foreign wasm oval: (
+  WasmI32,
+  WasmI32,
+  WasmI32,
+  WasmI32,
+) -> Void from "env"
+@unsafe
+export let oval = (x: Number, y: Number, width: Number, height: Number) => {
+  oval(
+    untagSimpleNumber(x),
+    untagSimpleNumber(y),
+    untagSimpleNumber(width),
+    untagSimpleNumber(height)
+  )
+}
+
+import foreign wasm rect: (
+  WasmI32,
+  WasmI32,
+  WasmI32,
+  WasmI32,
+) -> Void from "env"
+@unsafe
+export let rect = (x: Number, y: Number, width: Number, height: Number) => {
+  rect(
+    untagSimpleNumber(x),
+    untagSimpleNumber(y),
+    untagSimpleNumber(width),
+    untagSimpleNumber(height)
+  )
+}
+
+import foreign wasm textUtf8: (
+  WasmI32,
+  WasmI32,
+  WasmI32,
+  WasmI32,
+) -> Void from "env"
+@unsafe
+export let text = (string: String, x: Number, y: Number) => {
+  textUtf8(
+    WasmI32.add(WasmI32.fromGrain(string), 8n),
+    WasmI32.load(WasmI32.fromGrain(string), 4n),
+    untagSimpleNumber(x),
+    untagSimpleNumber(y)
+  )
+}
+
+import foreign wasm tone: (
+  WasmI32,
+  WasmI32,
+  WasmI32,
+  WasmI32,
+) -> Void from "env"
+@unsafe
+export let tone =
+  (
+    frequency: Int32,
+    duration: Int32,
+    volume: Int32,
+    flags: Int32,
+  ) => {
+  tone(
+    WasmI32.load(WasmI32.fromGrain(frequency), 8n),
+    WasmI32.load(WasmI32.fromGrain(duration), 8n),
+    WasmI32.load(WasmI32.fromGrain(volume), 8n),
+    WasmI32.load(WasmI32.fromGrain(flags), 8n)
+  )
+}
+
+import foreign wasm diskr: (WasmI32, WasmI32) -> WasmI32 from "env"
+@unsafe
+export let diskr = (size: Number) => {
+  let size = untagSimpleNumber(size)
+  let bytes = DataStructures.allocateBytes(size)
+  let nread = diskr(WasmI32.add(bytes, 8n), size)
+  WasmI32.store(bytes, nread, 4n)
+  WasmI32.toGrain(bytes): Bytes
+}
+
+import foreign wasm diskw: (WasmI32, WasmI32) -> WasmI32 from "env"
+@unsafe
+export let diskw = (bytes: Bytes) => {
+  let bytes = WasmI32.fromGrain(bytes)
+  let size = WasmI32.load(bytes, 4n)
+  let nwritten = diskw(WasmI32.add(bytes, 8n), size)
+  tagSimpleNumber(nwritten)
+}
+
+import foreign wasm traceUtf8: (WasmI32, WasmI32) -> Void from "env"
+@unsafe
+export let trace = (msg: String) => {
+  let msgPtr = WasmI32.fromGrain(msg)
+  traceUtf8(WasmI32.add(msgPtr, 8n), WasmI32.load(msgPtr, 4n))
+}

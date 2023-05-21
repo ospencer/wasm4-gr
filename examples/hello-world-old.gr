@@ -1,0 +1,48 @@
+import * from "fastNumber"
+import W4 from "wasm4-old"
+import { tagSimpleNumber } from "runtime/dataStructures"
+import WasmI32 from "runtime/unsafe/wasmi32"
+
+let smiley = b"\xc3\x81\x24\x24\x00\x24\x99\xc3"
+
+let itsDangerous = "IT'S DANGEROUS\n TO GO ALONE!"
+
+let mut x = 76
+let mut y = 76
+
+let mut frame = 0
+
+export let update = () => {
+  if (frame == 108) {
+    frame = 0
+  }
+
+  // Load the gamepad
+  let gamepad = W4.gamepad1()
+
+  // Move the player location
+  if ((gamepad & W4._BUTTON_LEFT) > 0) {
+    x -= 1
+  }
+  if ((gamepad & W4._BUTTON_RIGHT) > 0) {
+    x += 1
+  }
+  if ((gamepad & W4._BUTTON_UP) > 0) {
+    y -= 1
+  }
+  if ((gamepad & W4._BUTTON_DOWN) > 0) {
+    y += 1
+  }
+
+  // Swap to color 2
+  W4.drawColors(2)
+  // Write the text
+  W4.text(itsDangerous, 24, 50)
+
+  // Swap to color 3
+  W4.drawColors(3)
+  // Draw the sprite
+  W4.blit(smiley, x, y, 8, 8, W4._BLIT_1BPP)
+
+  frame += 1
+}

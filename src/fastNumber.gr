@@ -1,0 +1,62 @@
+import WasmI32 from "runtime/unsafe/wasmi32"
+import { tagSimpleNumber, untagSimpleNumber } from "runtime/dataStructures"
+
+@unsafe
+export let (+) = (a: Number, b: Number) => {
+  tagSimpleNumber(WasmI32.add(untagSimpleNumber(a), untagSimpleNumber(b)))
+}
+
+@unsafe
+export let (-) = (a: Number, b: Number) => {
+  tagSimpleNumber(WasmI32.sub(untagSimpleNumber(a), untagSimpleNumber(b)))
+}
+
+@unsafe
+export let (&) = (a: Number, b: Number) => {
+  tagSimpleNumber(WasmI32.and(untagSimpleNumber(a), untagSimpleNumber(b)))
+}
+
+@unsafe
+export let (|) = (a: Number, b: Number) => {
+  tagSimpleNumber(WasmI32.or(untagSimpleNumber(a), untagSimpleNumber(b)))
+}
+
+@unsafe
+export let (<) = (a: Number, b: Number) => {
+  WasmI32.ltU(untagSimpleNumber(a), untagSimpleNumber(b))
+}
+
+@unsafe
+export let (<=) = (a: Number, b: Number) => {
+  WasmI32.leU(untagSimpleNumber(a), untagSimpleNumber(b))
+}
+
+@unsafe
+export let (>) = (a: Number, b: Number) => {
+  WasmI32.gtU(untagSimpleNumber(a), untagSimpleNumber(b))
+}
+
+@unsafe
+export let (>=) = (a: Number, b: Number) => {
+  WasmI32.geU(untagSimpleNumber(a), untagSimpleNumber(b))
+}
+
+@unsafe
+export let (<<) = (a: Number, b: Number) => {
+  tagSimpleNumber(WasmI32.shl(untagSimpleNumber(a), untagSimpleNumber(b)))
+}
+
+@unsafe
+export let (>>) = (a: Number, b: Number) => {
+  tagSimpleNumber(WasmI32.shrS(untagSimpleNumber(a), untagSimpleNumber(b)))
+}
+
+@unsafe
+export let (>>>) = (a: Number, b: Number) => {
+  tagSimpleNumber(WasmI32.shrU(untagSimpleNumber(a), untagSimpleNumber(b)))
+}
+
+@unsafe
+export let (==) = (a: Number, b: Number) => {
+  WasmI32.eq(untagSimpleNumber(a), untagSimpleNumber(b))
+}

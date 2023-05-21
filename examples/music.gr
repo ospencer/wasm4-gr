@@ -1,0 +1,547 @@
+import * from "fastNumber"
+import W4 from "wasm4"
+import { tagSimpleNumber } from "runtime/dataStructures"
+import WasmI32 from "runtime/unsafe/wasmi32"
+
+@unsafe
+let arrayLen = (a: Array<a>) => {
+  tagSimpleNumber(WasmI32.load(WasmI32.fromGrain(a), 4n))
+}
+
+let smiley = b"\xc3\x81\x24\x24\x00\x24\x99\xc3"
+let itsDangerous = "IT'S DANGEROUS\n TO GO ALONE!"
+
+let mut x = 76
+let mut y = 76
+
+let _VOLUME_LEVEL = 100l
+
+let mut measure = 0
+let mut frame = 0
+
+let note_f1 = 44l
+let note_c2 = 65l
+let note_b2 = 123l
+let note_d3 = 147l
+let note_e3 = 165l
+let note_g3 = 196l
+let note_a3 = 220l
+let note_gs4 = 415l
+let note_a4 = 440l
+let note_d4 = 294l
+let note_e4 = 330l
+let note_fs4 = 370l
+let note_b3 = 247l
+let note_d5 = 587l
+let note_cs5 = 554l
+let note_fs3 = 185l
+let note_b4 = 494l
+
+let tones = [>
+  note_f1,
+  note_c2,
+  note_b2,
+  note_d3,
+  note_e3,
+  note_g3,
+  note_a3,
+  note_gs4,
+  note_a4,
+  note_d4,
+  note_e4,
+  note_fs4,
+  note_b3,
+  note_d5,
+  note_cs5,
+  note_fs3,
+  note_b4,
+]
+
+let breve = 216l
+let whole = 108l
+let half = 54l
+let quarter = 27l
+let eigth = 13l
+let sixteenth = 6l
+let thirtysecond = 3l
+
+let durations = [> breve, whole, half, quarter, eigth, sixteenth, thirtysecond]
+
+let zero = 0
+let eightyone = 81
+
+let zero_note_e3_breve = 0x000400
+let zero_note_d3_breve = 0x000300
+let zero_note_e3_half = 0x000402
+let zero_note_e3_half = 0x000402
+let zero_note_d3_half = 0x000302
+let zero_note_f1_eigth = 0x000004
+let zero_note_gs4_eigth = 0x000704
+let zero_note_a4_eigth = 0x000804
+let zero_note_e4_eigth = 0x000a04
+let zero_note_fs4_eigth = 0x000b04
+let zero_note_d5_eigth = 0x000d04
+let zero_note_d3_eigth = 0x000304
+
+let thirteen_note_gs4_eigth = 0x0d0704
+let thirteen_note_a4_eigth = 0x0d0804
+let thirteen_note_e4_eigth = 0x0d0a04
+let thirteen_note_fs4_eigth = 0x0d0b04
+let thirteen_note_cs5_eigth = 0x0d0e04
+
+let twentyseven_note_g3 = 0x1b0500
+let twentyseven_note_gs4_eigth = 0x1b0704
+let twentyseven_note_a4_eigth = 0x1b0804
+let twentyseven_note_e4_eigth = 0x1b0a04
+let twentyseven_note_cs5_eigth = 0x1b0e04
+let twentyseven_note_b2_eigth = 0x1b0204
+
+let forty_note_f1_sixteenth = 0x280005
+let forty_note_gs4_eigth = 0x280704
+let forty_note_a4_eigth = 0x280804
+let forty_note_e4_eigth = 0x280a04
+let forty_note_cs5_eigth = 0x280e04
+
+let fortyseven_note_g3 = 0x2f0500
+
+let fiftyfour_note_gs4_eigth = 0x360704
+let fiftyfour_note_a4_eigth = 0x360804
+let fiftyfour_note_d4_eigth = 0x360904
+let fiftyfour_note_e4_eigth = 0x360a04
+let fiftyfour_note_b3_eigth = 0x360c04
+let fiftyfour_note_fs3_eigth = 0x360f04
+let fiftyfour_note_b4_eigth = 0x361004
+
+let sixtyseven_note_f1_sixteenth = 0x430005
+let sixtyseven_note_f1_thirtysecond = 0x430006
+let sixtyseven_note_d4_eigth = 0x430904
+let sixtyseven_note_b3_eigth = 0x430c04
+let sixtyseven_note_a4_eigth = 0x430804
+let sixtyseven_note_b4_eigth = 0x431004
+
+let seventyfour_note_c2_thirtysecond = 0x4a0106
+
+let eightyone_note_g3 = 0x510500
+let eightyone_note_e3_eigth = 0x510404
+let eightyone_note_b2_eigth = 0x510204
+let eightyone_note_a3_eigth = 0x510604
+let eightyone_note_b3_eigth = 0x510c04
+let eightyone_note_d4_eigth = 0x510904
+let eightyone_note_d5_eigth = 0x510d04
+let eightyone_note_a4_eigth = 0x510804
+let eightyone_note_d3_eigth = 0x510304
+let eightyone_note_b4_eigth = 0x511004
+
+let eightyone_note_f1_sixteenth = 0x510005
+
+let ninetyfour_note_g3 = 0x5e0500
+let ninetyfour_note_c2_sixteenth = 0x5e0105
+let ninetyfour_note_d4_eigth = 0x5e0904
+let ninetyfour_note_d5_eigth = 0x5e0d04
+
+let bass_m1 = [> zero_note_e3_half, eightyone_note_e3_eigth]
+let bass_m2 = [> zero_note_e3_half, eightyone_note_b2_eigth]
+let bass_m3 = [> zero_note_d3_half, eightyone_note_a3_eigth]
+let bass_m4 = [> zero_note_d3_half, eightyone_note_b2_eigth]
+let bass_m16 = [>
+  zero_note_d3_eigth,
+  twentyseven_note_b2_eigth,
+  fiftyfour_note_fs3_eigth,
+  eightyone_note_d3_eigth,
+]
+let bass_m17 = [> zero_note_e3_breve]
+let bass_m18 = [>]
+let bass_m19 = [> zero_note_d3_breve]
+
+let bass = [>
+  bass_m1,
+  bass_m2,
+  bass_m3,
+  bass_m4,
+  bass_m1,
+  bass_m2,
+  bass_m3,
+  bass_m4,
+  bass_m1,
+  bass_m2,
+  bass_m3,
+  bass_m4,
+  bass_m1,
+  bass_m2,
+  bass_m3,
+  bass_m4,
+  bass_m1,
+  bass_m2,
+  bass_m3,
+  bass_m16,
+  bass_m1,
+  bass_m2,
+  bass_m3,
+  bass_m16,
+  bass_m17,
+  bass_m18,
+  bass_m19,
+  bass_m18,
+  bass_m17,
+  bass_m18,
+  bass_m19,
+  bass_m18,
+]
+let bass_len = arrayLen(bass)
+
+let drum_m1 = [>
+  zero_note_f1_eigth,
+  sixtyseven_note_f1_sixteenth,
+  ninetyfour_note_c2_sixteenth,
+]
+let drum_m2 = [>
+  zero_note_f1_eigth,
+  forty_note_f1_sixteenth,
+  eightyone_note_f1_sixteenth,
+]
+
+let drum_m9 = [>
+  zero_note_f1_eigth,
+  forty_note_f1_sixteenth,
+  sixtyseven_note_f1_sixteenth,
+  ninetyfour_note_c2_sixteenth,
+]
+let drum_m10 = [>
+  zero_note_f1_eigth,
+  forty_note_f1_sixteenth,
+  eightyone_note_f1_sixteenth,
+  ninetyfour_note_c2_sixteenth,
+]
+let drum_m16 = [>
+  zero_note_f1_eigth,
+  forty_note_f1_sixteenth,
+  sixtyseven_note_f1_thirtysecond,
+  seventyfour_note_c2_thirtysecond,
+  eightyone_note_f1_sixteenth,
+  ninetyfour_note_c2_sixteenth,
+]
+let drum_m17 = [>
+  zero_note_f1_eigth,
+  sixtyseven_note_f1_sixteenth,
+  ninetyfour_note_c2_sixteenth,
+]
+let drum_m18 = [>
+  zero_note_f1_eigth,
+  forty_note_f1_sixteenth,
+  eightyone_note_f1_sixteenth,
+]
+let drum_m24 = [>
+  zero_note_f1_eigth,
+  forty_note_f1_sixteenth,
+  ninetyfour_note_c2_sixteenth,
+]
+let drum = [>
+  drum_m1,
+  drum_m2,
+  drum_m1,
+  drum_m2,
+  drum_m1,
+  drum_m2,
+  drum_m1,
+  drum_m2,
+  drum_m9,
+  drum_m10,
+  drum_m9,
+  drum_m10,
+  drum_m9,
+  drum_m10,
+  drum_m9,
+  drum_m10,
+  drum_m9,
+  drum_m10,
+  drum_m9,
+  drum_m16,
+  drum_m9,
+  drum_m10,
+  drum_m9,
+  drum_m16,
+  drum_m17,
+  drum_m18,
+  drum_m17,
+  drum_m18,
+  drum_m17,
+  drum_m18,
+  drum_m17,
+  drum_m24,
+]
+let drum_len = arrayLen(drum)
+
+let _HAT_DURATION = 0x0c04l // Int32.lor(4l, Int32.shl(12l, 8l))
+let hat_m1 = [> twentyseven_note_g3, eightyone_note_g3]
+let hat_m2 = [> twentyseven_note_g3, ninetyfour_note_g3]
+let hat_m16 = [> twentyseven_note_g3]
+let hat_m17 = [>]
+let hat_m23 = [> twentyseven_note_g3, fortyseven_note_g3, eightyone_note_g3]
+let hat = [>
+  hat_m1,
+  hat_m2,
+  hat_m1,
+  hat_m2,
+  hat_m1,
+  hat_m2,
+  hat_m1,
+  hat_m2,
+  hat_m1,
+  hat_m2,
+  hat_m1,
+  hat_m2,
+  hat_m1,
+  hat_m2,
+  hat_m1,
+  hat_m2,
+  hat_m1,
+  hat_m2,
+  hat_m1,
+  hat_m16,
+  hat_m1,
+  hat_m2,
+  hat_m1,
+  hat_m16,
+  hat_m17,
+  hat_m17,
+  hat_m17,
+  hat_m17,
+  hat_m1,
+  hat_m1,
+  hat_m23,
+  hat_m1,
+]
+let hat_len = arrayLen(hat)
+
+let viola_m1 = [>]
+let viola = [>
+  viola_m1,
+  viola_m1,
+  viola_m1,
+  viola_m1,
+  [>
+    zero_note_gs4_eigth,
+    thirteen_note_gs4_eigth,
+    twentyseven_note_gs4_eigth,
+    forty_note_gs4_eigth,
+    fiftyfour_note_gs4_eigth,
+  ],
+  viola_m1,
+  [>
+    zero_note_a4_eigth,
+    thirteen_note_a4_eigth,
+    twentyseven_note_a4_eigth,
+    forty_note_a4_eigth,
+    fiftyfour_note_a4_eigth,
+  ],
+  [>
+    fiftyfour_note_d4_eigth,
+    sixtyseven_note_d4_eigth,
+    eightyone_note_d4_eigth,
+  ],
+  [>
+    zero_note_e4_eigth,
+    thirteen_note_e4_eigth,
+    twentyseven_note_e4_eigth,
+    forty_note_e4_eigth,
+    fiftyfour_note_e4_eigth,
+    eightyone_note_d4_eigth,
+    ninetyfour_note_d4_eigth,
+  ],
+  [>
+    zero_note_fs4_eigth,
+    thirteen_note_fs4_eigth,
+    twentyseven_note_e4_eigth,
+    forty_note_e4_eigth,
+    fiftyfour_note_b3_eigth,
+    sixtyseven_note_b3_eigth,
+    eightyone_note_b3_eigth,
+  ],
+  [> eightyone_note_d5_eigth, ninetyfour_note_d5_eigth],
+  [>
+    zero_note_d5_eigth,
+    thirteen_note_cs5_eigth,
+    twentyseven_note_cs5_eigth,
+    forty_note_cs5_eigth,
+    fiftyfour_note_a4_eigth,
+    sixtyseven_note_a4_eigth,
+    eightyone_note_a4_eigth,
+  ],
+  [>
+    zero_note_e4_eigth,
+    thirteen_note_e4_eigth,
+    twentyseven_note_e4_eigth,
+    forty_note_e4_eigth,
+    fiftyfour_note_e4_eigth,
+    eightyone_note_d4_eigth,
+    ninetyfour_note_d4_eigth,
+  ],
+  [>
+    zero_note_fs4_eigth,
+    thirteen_note_fs4_eigth,
+    twentyseven_note_e4_eigth,
+    forty_note_e4_eigth,
+    fiftyfour_note_b3_eigth,
+    sixtyseven_note_b3_eigth,
+    eightyone_note_b3_eigth,
+  ],
+  [> eightyone_note_d5_eigth, ninetyfour_note_d5_eigth],
+  [>
+    zero_note_d5_eigth,
+    thirteen_note_cs5_eigth,
+    twentyseven_note_cs5_eigth,
+    forty_note_cs5_eigth,
+    fiftyfour_note_a4_eigth,
+    sixtyseven_note_a4_eigth,
+    eightyone_note_a4_eigth,
+  ],
+  [>
+    zero_note_e4_eigth,
+    thirteen_note_e4_eigth,
+    twentyseven_note_e4_eigth,
+    forty_note_e4_eigth,
+    fiftyfour_note_e4_eigth,
+    eightyone_note_d4_eigth,
+    ninetyfour_note_d4_eigth,
+  ],
+  [>
+    zero_note_fs4_eigth,
+    thirteen_note_fs4_eigth,
+    twentyseven_note_e4_eigth,
+    forty_note_e4_eigth,
+    fiftyfour_note_b4_eigth,
+    sixtyseven_note_b4_eigth,
+    eightyone_note_b4_eigth,
+  ],
+  [> eightyone_note_d5_eigth, ninetyfour_note_d5_eigth],
+  [>
+    zero_note_d5_eigth,
+    thirteen_note_cs5_eigth,
+    twentyseven_note_cs5_eigth,
+    forty_note_cs5_eigth,
+    fiftyfour_note_a4_eigth,
+    sixtyseven_note_a4_eigth,
+    eightyone_note_a4_eigth,
+  ],
+  [>
+    zero_note_e4_eigth,
+    thirteen_note_e4_eigth,
+    twentyseven_note_e4_eigth,
+    forty_note_e4_eigth,
+    fiftyfour_note_e4_eigth,
+    eightyone_note_d4_eigth,
+    ninetyfour_note_d4_eigth,
+  ],
+  [>
+    zero_note_fs4_eigth,
+    thirteen_note_fs4_eigth,
+    twentyseven_note_e4_eigth,
+    forty_note_e4_eigth,
+    fiftyfour_note_b4_eigth,
+    sixtyseven_note_b4_eigth,
+    eightyone_note_b4_eigth,
+  ],
+  [> eightyone_note_d5_eigth, ninetyfour_note_d5_eigth],
+  [>
+    zero_note_d5_eigth,
+    thirteen_note_cs5_eigth,
+    twentyseven_note_cs5_eigth,
+    forty_note_cs5_eigth,
+    fiftyfour_note_a4_eigth,
+    sixtyseven_note_a4_eigth,
+    eightyone_note_a4_eigth,
+  ],
+  [>],
+  [>],
+  [>],
+  [>],
+  [>],
+  [>],
+  [>],
+  [>
+    fiftyfour_note_d4_eigth,
+    sixtyseven_note_d4_eigth,
+    eightyone_note_d4_eigth,
+    ninetyfour_note_d4_eigth,
+  ],
+]
+let viola_len = arrayLen(viola)
+
+export let update = () => {
+  if (frame == 108) {
+    frame = 0
+    measure += 1
+  }
+
+  // Load the gamepad
+  let gamepad = W4.gamepad1()
+
+  // Move the player location
+  if ((gamepad & W4._BUTTON_LEFT) > 0) {
+    x -= 1
+  }
+  if ((gamepad & W4._BUTTON_RIGHT) > 0) {
+    x += 1
+  }
+  if ((gamepad & W4._BUTTON_UP) > 0) {
+    y -= 1
+  }
+  if ((gamepad & W4._BUTTON_DOWN) > 0) {
+    y += 1
+  }
+
+  // Swap to color 2
+  W4.drawColors(2)
+  // Write the text
+  W4.text(itsDangerous, 24, 50)
+
+  // Swap to color 3
+  W4.drawColors(3)
+  // Draw the sprite
+  W4.blit(smiley, x, y, 8, 8, W4._BLIT_1BPP)
+
+  // Play music
+  if (measure < bass_len) {
+    let bass_notes = bass[measure]
+    for (let mut i = 0; i < arrayLen(bass_notes); i += 1) {
+      let m = bass_notes[i]
+      let wen = (m & 0xff0000) >> 16
+      let note = tones[(m & 0xff00) >> 8]
+      let duration = durations[m & 0xff]
+      if (frame == wen)
+        W4.tone(note, duration, _VOLUME_LEVEL, W4._TONE_TRIANGLE)
+    }
+  }
+  if (measure < drum_len) {
+    let drum_notes = drum[measure]
+    for (let mut i = 0; i < arrayLen(drum_notes); i += 1) {
+      let m = drum_notes[i]
+      let wen = (m & 0xff0000) >> 16
+      let note = tones[(m & 0xff00) >> 8]
+      let duration = durations[m & 0xff]
+      if (frame == wen) W4.tone(note, duration, _VOLUME_LEVEL, W4._TONE_PULSE1)
+    }
+  }
+  if (measure < hat_len) {
+    let hat_notes = hat[measure]
+    for (let mut i = 0; i < arrayLen(hat_notes); i += 1) {
+      let m = hat_notes[i]
+      let wen = (m & 0xff0000) >> 16
+      let note = tones[(m & 0xff00) >> 8]
+      // let duration = durations[m & 0xff]
+      if (frame == wen) W4.tone(note, _HAT_DURATION, 25l, W4._TONE_NOISE)
+    }
+  }
+  if (measure < viola_len) {
+    let viola_notes = viola[measure]
+    for (let mut i = 0; i < arrayLen(viola_notes); i += 1) {
+      let m = viola_notes[i]
+      let wen = (m & 0xff0000) >> 16
+      let note = tones[(m & 0xff00) >> 8]
+      let duration = durations[m & 0xff]
+      if (frame == wen) W4.tone(note, duration, _VOLUME_LEVEL, W4._TONE_PULSE2)
+    }
+  }
+
+  frame += 1
+}
