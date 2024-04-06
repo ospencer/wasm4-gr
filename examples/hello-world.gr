@@ -36,12 +36,12 @@ provide let update = () => {
   }
 
   // Swap to color 2
-  W4.drawColors(2us)
+  W4.drawColors(2uS)
   // Write the text
   W4.text(itsDangerous, 24us, 50us)
 
   // Swap to color 3
-  W4.drawColors(3us)
+  W4.drawColors(3uS)
   // Draw the sprite
   W4.blit(smiley, x, y, 8us, 8us, W4._BLIT_1BPP)
 

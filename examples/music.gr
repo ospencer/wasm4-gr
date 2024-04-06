@@ -528,18 +528,18 @@ provide let update = () => {
   }
 
   // Swap to color 3
-  W4.drawColors(3us)
+  W4.drawColors(3uS)
   // Write the text
   W4.text(baba, 44us, 2us)
   W4.text(you, 92us, 2us)
 
   // Swap to color 2
-  W4.drawColors(2us)
+  W4.drawColors(2uS)
   // Write the text
   W4.text(_is, 76us, 2us)
 
   // Swap to color 2
-  W4.drawColors(2us)
+  W4.drawColors(2uS)
 
   let (player, blitFlags) = match (babaDirection) {
     Left when animAlt => (babaRight2, W4._BLIT_1BPP | W4._BLIT_FLIP_X),
@@ -561,30 +561,28 @@ provide let update = () => {
     for (let mut i = 0us; i < arrayLen(bass_notes); i += 1us) {
       let (wen, note, duration) = bass_notes[Uint8.toNumber(i)]
       if (frame == wen)
-        W4.tone(note, 0uS, duration, _VOLUME_LEVEL, W4._TONE_TRIANGLE)
+        W4.tone(note, duration, _VOLUME_LEVEL, W4._TONE_TRIANGLE)
     }
   }
   if (measure < drum_len) {
     let drum_notes = drum[Uint8.toNumber(measure)]
     for (let mut i = 0us; i < arrayLen(drum_notes); i += 1us) {
       let (wen, note, duration) = drum_notes[Uint8.toNumber(i)]
-      if (frame == wen)
-        W4.tone(note, 0uS, duration, _VOLUME_LEVEL, W4._TONE_PULSE1)
+      if (frame == wen) W4.tone(note, duration, _VOLUME_LEVEL, W4._TONE_PULSE1)
     }
   }
   if (measure < hat_len) {
     let hat_notes = hat[Uint8.toNumber(measure)]
     for (let mut i = 0us; i < arrayLen(hat_notes); i += 1us) {
       let (wen, note, duration) = hat_notes[Uint8.toNumber(i)]
-      if (frame == wen) W4.tone(note, 0uS, _HAT_DURATION, 50us, W4._TONE_NOISE)
+      if (frame == wen) W4.tone(note, _HAT_DURATION, 50us, W4._TONE_NOISE)
     }
   }
   if (measure < viola_len) {
     let viola_notes = viola[Uint8.toNumber(measure)]
     for (let mut i = 0us; i < arrayLen(viola_notes); i += 1us) {
       let (wen, note, duration) = viola_notes[Uint8.toNumber(i)]
-      if (frame == wen)
-        W4.tone(note, 0uS, duration, _VOLUME_LEVEL, W4._TONE_PULSE2)
+      if (frame == wen) W4.tone(note, duration, _VOLUME_LEVEL, W4._TONE_PULSE2)
     }
   }
 
