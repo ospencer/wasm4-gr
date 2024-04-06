@@ -1,6 +1,6 @@
 # wasm4-gr
 
-This project contains Grain bindings to [WASM-4](https://wasm4.org/), a low-level fantasy game console for building small games with WebAssembly. You can find docs for the library [here], but for a general overview of WASM-4, check our their [docs](https://wasm4.org/docs/).
+This project contains Grain bindings to [WASM-4](https://wasm4.org/), a low-level fantasy game console for building small games with WebAssembly. You can find docs for the library [here](https://ospencer.github.io/wasm4-gr/), but for a general overview of WASM-4, check our their [docs](https://wasm4.org/docs/).
 
 ## Building your project
 
