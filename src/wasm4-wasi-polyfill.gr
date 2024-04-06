@@ -1,23 +1,25 @@
-import WasmI32 from "runtime/unsafe/wasmi32"
+module Polyfill
 
-import foreign wasm traceUtf8: (WasmI32, WasmI32) -> Void from "env"
+from "runtime/unsafe/wasmi32" include WasmI32
+
+foreign wasm traceUtf8: (WasmI32, WasmI32) => Void from "env"
 @unsafe
-export let fd_write: (WasmI32, WasmI32, WasmI32, WasmI32) -> WasmI32 =
-  (
-    fd,
-    iovs,
-    iovs_len,
-    nwritten,
-  ) => {
+provide let fd_write: (WasmI32, WasmI32, WasmI32, WasmI32) => WasmI32 = (
+  fd,
+  iovs,
+  iovs_len,
+  nwritten,
+) => {
+  use WasmI32.{ (+) }
   let mut written = 0n
   let mut iovs_offset = 0n
-  for (let mut i = 0n; WasmI32.ltU(i, iovs_len); i = WasmI32.add(i, 1n)) {
-    let iovs = WasmI32.add(iovs, iovs_offset)
+  for (let mut i = 0n; WasmI32.ltU(i, iovs_len); i += 1n) {
+    let iovs = iovs + iovs_offset
     let ptr = WasmI32.load(iovs, 0n)
     let size = WasmI32.load(iovs, 4n)
     traceUtf8(ptr, size)
-    written = WasmI32.add(written, size)
-    iovs_offset = WasmI32.add(iovs_offset, 8n)
+    written += size
+    iovs_offset += 8n
   }
   WasmI32.store(nwritten, written, 0n)
   0n

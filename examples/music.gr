@@ -1,143 +1,161 @@
-import * from "fastNumber"
-import W4 from "wasm4"
-import { tagSimpleNumber } from "runtime/dataStructures"
-import WasmI32 from "runtime/unsafe/wasmi32"
+module Music
+
+from "wasm4" include Wasm4 as W4
+from "uint8" include Uint8
+from "uint16" include Uint16
+
+primitive length = "@array.length"
 
 @unsafe
 let arrayLen = (a: Array<a>) => {
-  tagSimpleNumber(WasmI32.load(WasmI32.fromGrain(a), 4n))
+  Uint8.fromNumber(length(a))
 }
 
-let smiley = b"\xc3\x81\x24\x24\x00\x24\x99\xc3"
-let itsDangerous = "IT'S DANGEROUS\n TO GO ALONE!"
+let babaRight =
+  b"\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\x7f\xff\x9e\x7f\xff\x8e\x3f\xff\x8e\x3f\xf8\x00\x0f\xf0\x00\x07\xe0\x00\x33\xe0\x00\x33\xe0\x03\x03\xe0\x03\x03\xe0\x00\x03\xf0\x00\x03\xf0\x00\x07\xf8\x00\x07\xf9\x9c\xe7\xf1\x9c\x67\xf1\x9e\x67\xf3\x9e\x67\xff\xff\xff\xff\xff\xff\xff\xff\xff"
+let babaRight2 =
+  b"\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xcf\x3f\xff\xc7\x3f\xff\xc7\x3f\xf8\x00\x1f\xf0\x00\x0f\xf0\x00\x67\xe0\x00\x67\xe0\x03\x07\xe0\x03\x07\xf0\x00\x07\xf0\x00\x07\xf8\x00\x07\xf9\x00\x0f\xf9\x9c\xcf\xf9\x1c\xc7\xf9\x1c\xc7\xf9\x3c\xe7\xff\xff\xff\xff\xff\xff"
+let babaUp =
+  b"\xff\xff\xff\xff\xff\xff\xff\x3e\x7f\xff\x3e\x7f\xff\x00\x7f\xfe\x00\x7f\xfe\x00\x3f\xfe\x00\x3f\xfe\x00\x1f\xfe\x00\x1f\xfc\x00\x1f\xfc\x00\x1f\xfc\x00\x1f\xfc\x00\x1f\xfc\x00\x1f\xfc\x00\x1f\xfe\x00\x3f\xfe\x00\x3f\xfe\x00\x7f\xfe\x3e\x7f\xff\x3e\x7f\xff\xff\xff\xff\xff\xff\xff\xff\xff"
+let babaUp2 =
+  b"\xff\xff\xff\xff\xff\xff\xff\x9e\x7f\xff\x00\x7f\xff\x00\x7f\xfe\x00\x3f\xfc\x00\x3f\xfc\x00\x3f\xfc\x00\x3f\xfc\x00\x1f\xfc\x00\x1f\xfc\x00\x1f\xfc\x00\x1f\xfc\x00\x1f\xfc\x00\x1f\xfe\x00\x3f\xfe\x00\x3f\xfe\x00\x3f\xfe\x40\x3f\xfe\x7f\x3f\xfe\x7f\x3f\xff\xff\xff\xff\xff\xff\xff\xff\xff"
+let babaDown =
+  b"\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xe0\x7f\xff\x80\x3f\xff\x00\x1f\xfe\x00\x1f\xfe\x00\x1f\xfe\x00\x1f\xfe\x00\x0f\xfe\x00\x0f\xfe\x00\x0f\xfe\x01\x8f\xfe\x01\x8f\xfe\x30\x0f\xff\x30\x1f\xff\x00\x1f\xff\x00\x1f\xff\x20\x1f\xff\x3f\x9f\xff\x3f\x9f\xff\xff\xff\xff\xff\xff\xff\xff\xff"
+let babaDown2 =
+  b"\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\x80\xff\xff\x00\x7f\xfe\x00\x3f\xfe\x00\x3f\xfc\x00\x3f\xfc\x00\x1f\xfc\x00\x1f\xfc\x00\x1f\xfc\x00\x1f\xfc\x00\x1f\xfc\x63\x1f\xfc\x63\x1f\xfc\x00\x1f\xfc\x00\x3f\xfe\x00\x3f\xfe\x3f\x3f\xfe\x7f\x3f\xfe\x7f\x3f\xff\xff\xff\xff\xff\xff\xff\xff\xff"
 
-let mut x = 76
-let mut y = 76
+enum BabaDirection {
+  Left,
+  Right,
+  Up,
+  Down,
+}
+let baba = "BABA"
+let _is = "IS"
+let you = "YOU"
 
-let _VOLUME_LEVEL = 100l
+let mut x = 56us
+let mut y = 80us
 
-let mut measure = 0
-let mut frame = 0
+let mut babaDirection = Right
+let mut animAlt = false
 
-let note_f1 = 44l
-let note_c2 = 65l
-let note_b2 = 123l
-let note_d3 = 147l
-let note_e3 = 165l
-let note_g3 = 196l
-let note_a3 = 220l
-let note_gs4 = 415l
-let note_a4 = 440l
-let note_d4 = 294l
-let note_e4 = 330l
-let note_fs4 = 370l
-let note_b3 = 247l
-let note_d5 = 587l
-let note_cs5 = 554l
-let note_fs3 = 185l
-let note_b4 = 494l
+let _VOLUME_LEVEL = 100us
 
-let tones = [>
-  note_f1,
-  note_c2,
-  note_b2,
-  note_d3,
-  note_e3,
-  note_g3,
-  note_a3,
-  note_gs4,
-  note_a4,
-  note_d4,
-  note_e4,
-  note_fs4,
-  note_b3,
-  note_d5,
-  note_cs5,
-  note_fs3,
-  note_b4,
-]
+let mut measure = 0us
+let mut frame = 0us
+let mut lock = 0us
 
-let breve = 216l
-let whole = 108l
-let half = 54l
-let quarter = 27l
-let eigth = 13l
-let sixteenth = 6l
-let thirtysecond = 3l
+let note_f1 = 44uS
+let note_c2 = 65uS
+let note_b2 = 123uS
+let note_d3 = 147uS
+let note_e3 = 165uS
+let note_g3 = 196uS
+let note_a3 = 220uS
+let note_gs4 = 415uS
+let note_a4 = 440uS
+let note_d4 = 294uS
+let note_e4 = 330uS
+let note_fs4 = 370uS
+let note_b3 = 247uS
+let note_d5 = 587uS
+let note_cs5 = 554uS
+let note_fs3 = 185uS
+let note_b4 = 494uS
 
-let durations = [> breve, whole, half, quarter, eigth, sixteenth, thirtysecond]
+let breve = 216uS
+let whole = 108uS
+let half = 54uS
+let quarter = 27uS
+let eigth = 12uS
+let sixteenth = 6uS
+let thirtysecond = 3uS
 
-let zero = 0
-let eightyone = 81
+let zero = 0us
+let thirteen = 13us
+let twentyseven = 27us
+let forty = 40us
+let fortyseven = 47us
+let fiftyfour = 54us
+let sixtyseven = 67us
+let seventyfour = 74us
+let eightyone = 81us
+let ninetyfour = 94us
 
-let zero_note_e3_breve = 0x000400
-let zero_note_d3_breve = 0x000300
-let zero_note_e3_half = 0x000402
-let zero_note_e3_half = 0x000402
-let zero_note_d3_half = 0x000302
-let zero_note_f1_eigth = 0x000004
-let zero_note_gs4_eigth = 0x000704
-let zero_note_a4_eigth = 0x000804
-let zero_note_e4_eigth = 0x000a04
-let zero_note_fs4_eigth = 0x000b04
-let zero_note_d5_eigth = 0x000d04
-let zero_note_d3_eigth = 0x000304
+// Measures are subdivided into 128 thiry-second notes
+// The "when" of a note is which thirty-second note to begin the tone
 
-let thirteen_note_gs4_eigth = 0x0d0704
-let thirteen_note_a4_eigth = 0x0d0804
-let thirteen_note_e4_eigth = 0x0d0a04
-let thirteen_note_fs4_eigth = 0x0d0b04
-let thirteen_note_cs5_eigth = 0x0d0e04
+// (when, note, duration)
 
-let twentyseven_note_g3 = 0x1b0500
-let twentyseven_note_gs4_eigth = 0x1b0704
-let twentyseven_note_a4_eigth = 0x1b0804
-let twentyseven_note_e4_eigth = 0x1b0a04
-let twentyseven_note_cs5_eigth = 0x1b0e04
-let twentyseven_note_b2_eigth = 0x1b0204
+let zero_note_e3_breve = (zero, note_e3, breve)
+let zero_note_d3_breve = (zero, note_d3, breve)
+let zero_note_e3_half = (zero, note_e3, half)
+let zero_note_e3_half = (zero, note_e3, half)
+let zero_note_d3_half = (zero, note_d3, half)
+let zero_note_f1_eigth = (zero, note_f1, eigth)
+let zero_note_gs4_eigth = (zero, note_gs4, eigth)
+let zero_note_a4_eigth = (zero, note_a4, eigth)
+let zero_note_e4_eigth = (zero, note_e4, eigth)
+let zero_note_fs4_eigth = (zero, note_fs4, eigth)
+let zero_note_d5_eigth = (zero, note_d5, eigth)
+let zero_note_d3_eigth = (zero, note_d3, eigth)
 
-let forty_note_f1_sixteenth = 0x280005
-let forty_note_gs4_eigth = 0x280704
-let forty_note_a4_eigth = 0x280804
-let forty_note_e4_eigth = 0x280a04
-let forty_note_cs5_eigth = 0x280e04
+let thirteen_note_gs4_eigth = (thirteen, note_gs4, eigth)
+let thirteen_note_a4_eigth = (thirteen, note_a4, eigth)
+let thirteen_note_e4_eigth = (thirteen, note_e4, eigth)
+let thirteen_note_fs4_eigth = (thirteen, note_fs4, eigth)
+let thirteen_note_cs5_eigth = (thirteen, note_cs5, eigth)
 
-let fortyseven_note_g3 = 0x2f0500
+let twentyseven_note_g3_breve = (twentyseven, note_g3, breve)
+let twentyseven_note_gs4_eigth = (twentyseven, note_gs4, eigth)
+let twentyseven_note_a4_eigth = (twentyseven, note_a4, eigth)
+let twentyseven_note_e4_eigth = (twentyseven, note_e4, eigth)
+let twentyseven_note_cs5_eigth = (twentyseven, note_cs5, eigth)
+let twentyseven_note_b2_eigth = (twentyseven, note_b2, eigth)
 
-let fiftyfour_note_gs4_eigth = 0x360704
-let fiftyfour_note_a4_eigth = 0x360804
-let fiftyfour_note_d4_eigth = 0x360904
-let fiftyfour_note_e4_eigth = 0x360a04
-let fiftyfour_note_b3_eigth = 0x360c04
-let fiftyfour_note_fs3_eigth = 0x360f04
-let fiftyfour_note_b4_eigth = 0x361004
+let forty_note_f1_sixteenth = (forty, note_f1, sixteenth)
+let forty_note_gs4_eigth = (forty, note_gs4, eigth)
+let forty_note_a4_eigth = (forty, note_a4, eigth)
+let forty_note_e4_eigth = (forty, note_e4, eigth)
+let forty_note_cs5_eigth = (forty, note_cs5, eigth)
 
-let sixtyseven_note_f1_sixteenth = 0x430005
-let sixtyseven_note_f1_thirtysecond = 0x430006
-let sixtyseven_note_d4_eigth = 0x430904
-let sixtyseven_note_b3_eigth = 0x430c04
-let sixtyseven_note_a4_eigth = 0x430804
-let sixtyseven_note_b4_eigth = 0x431004
+let fortyseven_note_g3_breve = (fortyseven, note_g3, breve)
 
-let seventyfour_note_c2_thirtysecond = 0x4a0106
+let fiftyfour_note_gs4_eigth = (fiftyfour, note_gs4, eigth)
+let fiftyfour_note_a4_eigth = (fiftyfour, note_a4, eigth)
+let fiftyfour_note_d4_eigth = (fiftyfour, note_d4, eigth)
+let fiftyfour_note_e4_eigth = (fiftyfour, note_e4, eigth)
+let fiftyfour_note_b3_eigth = (fiftyfour, note_b3, eigth)
+let fiftyfour_note_fs3_eigth = (fiftyfour, note_fs3, eigth)
+let fiftyfour_note_b4_eigth = (fiftyfour, note_b4, eigth)
 
-let eightyone_note_g3 = 0x510500
-let eightyone_note_e3_eigth = 0x510404
-let eightyone_note_b2_eigth = 0x510204
-let eightyone_note_a3_eigth = 0x510604
-let eightyone_note_b3_eigth = 0x510c04
-let eightyone_note_d4_eigth = 0x510904
-let eightyone_note_d5_eigth = 0x510d04
-let eightyone_note_a4_eigth = 0x510804
-let eightyone_note_d3_eigth = 0x510304
-let eightyone_note_b4_eigth = 0x511004
+let sixtyseven_note_f1_sixteenth = (sixtyseven, note_f1, sixteenth)
+let sixtyseven_note_f1_thirtysecond = (sixtyseven, note_f1, thirtysecond)
+let sixtyseven_note_d4_eigth = (sixtyseven, note_d4, eigth)
+let sixtyseven_note_b3_eigth = (sixtyseven, note_b3, eigth)
+let sixtyseven_note_a4_eigth = (sixtyseven, note_a4, eigth)
+let sixtyseven_note_b4_eigth = (sixtyseven, note_b4, eigth)
 
-let eightyone_note_f1_sixteenth = 0x510005
+let seventyfour_note_c2_thirtysecond = (seventyfour, note_c2, thirtysecond)
 
-let ninetyfour_note_g3 = 0x5e0500
-let ninetyfour_note_c2_sixteenth = 0x5e0105
-let ninetyfour_note_d4_eigth = 0x5e0904
-let ninetyfour_note_d5_eigth = 0x5e0d04
+let eightyone_note_g3_breve = (eightyone, note_g3, breve)
+let eightyone_note_e3_eigth = (eightyone, note_e3, eigth)
+let eightyone_note_b2_eigth = (eightyone, note_b2, eigth)
+let eightyone_note_a3_eigth = (eightyone, note_a3, eigth)
+let eightyone_note_b3_eigth = (eightyone, note_b3, eigth)
+let eightyone_note_d4_eigth = (eightyone, note_d4, eigth)
+let eightyone_note_d5_eigth = (eightyone, note_d5, eigth)
+let eightyone_note_a4_eigth = (eightyone, note_a4, eigth)
+let eightyone_note_d3_eigth = (eightyone, note_d3, eigth)
+let eightyone_note_b4_eigth = (eightyone, note_b4, eigth)
+
+let eightyone_note_f1_sixteenth = (eightyone, note_f1, sixteenth)
+
+let ninetyfour_note_g3_breve = (ninetyfour, note_g3, breve)
+let ninetyfour_note_c2_sixteenth = (ninetyfour, note_c2, sixteenth)
+let ninetyfour_note_d4_eigth = (ninetyfour, note_d4, eigth)
+let ninetyfour_note_d5_eigth = (ninetyfour, note_d5, eigth)
 
 let bass_m1 = [> zero_note_e3_half, eightyone_note_e3_eigth]
 let bass_m2 = [> zero_note_e3_half, eightyone_note_b2_eigth]
@@ -271,12 +289,16 @@ let drum = [>
 ]
 let drum_len = arrayLen(drum)
 
-let _HAT_DURATION = 0x0c04l // Int32.lor(4l, Int32.shl(12l, 8l))
-let hat_m1 = [> twentyseven_note_g3, eightyone_note_g3]
-let hat_m2 = [> twentyseven_note_g3, ninetyfour_note_g3]
-let hat_m16 = [> twentyseven_note_g3]
+let _HAT_DURATION = 0x0c04uS // Int32.lor(4l, Int32.shl(12l, 8l))
+let hat_m1 = [> twentyseven_note_g3_breve, eightyone_note_g3_breve]
+let hat_m2 = [> twentyseven_note_g3_breve, ninetyfour_note_g3_breve]
+let hat_m16 = [> twentyseven_note_g3_breve]
 let hat_m17 = [>]
-let hat_m23 = [> twentyseven_note_g3, fortyseven_note_g3, eightyone_note_g3]
+let hat_m23 = [>
+  twentyseven_note_g3_breve,
+  fortyseven_note_g3_breve,
+  eightyone_note_g3_breve,
+]
 let hat = [>
   hat_m1,
   hat_m2,
@@ -334,11 +356,7 @@ let viola = [>
     forty_note_a4_eigth,
     fiftyfour_note_a4_eigth,
   ],
-  [>
-    fiftyfour_note_d4_eigth,
-    sixtyseven_note_d4_eigth,
-    eightyone_note_d4_eigth,
-  ],
+  [> fiftyfour_note_d4_eigth, sixtyseven_note_d4_eigth, eightyone_note_d4_eigth],
   [>
     zero_note_e4_eigth,
     thirteen_note_e4_eigth,
@@ -458,90 +476,117 @@ let viola = [>
   [>],
   [>],
   [>],
-  [>
-    fiftyfour_note_d4_eigth,
-    sixtyseven_note_d4_eigth,
-    eightyone_note_d4_eigth,
-    ninetyfour_note_d4_eigth,
-  ],
+  [> fiftyfour_note_d4_eigth, sixtyseven_note_d4_eigth, eightyone_note_d4_eigth],
 ]
 let viola_len = arrayLen(viola)
 
-export let update = () => {
-  if (frame == 108) {
-    frame = 0
-    measure += 1
+W4.setPalette(0x000000ul, 0xfffffful, 0xc8476bul, 0xebe291ul)
+
+provide let update = () => {
+  use Uint8.{ (+), (-), (&), (|), (<), (>), (<=), (>=), (==), rem as (%) }
+
+  if (frame == 108us) {
+    frame = 0us
+    measure += 1us
+    if (measure == 32us) measure = 0us
+  }
+
+  if (frame % 27us == 0us) {
+    animAlt = !animAlt
+  }
+
+  let canMove = if (lock == 0us) {
+    true
+  } else {
+    lock -= 1us
+    false
   }
 
   // Load the gamepad
   let gamepad = W4.gamepad1()
 
   // Move the player location
-  if ((gamepad & W4._BUTTON_LEFT) > 0) {
-    x -= 1
+  if (canMove && (gamepad & W4._BUTTON_LEFT) > 0us && x >= 32us) {
+    babaDirection = Left
+    x -= 24us
+    lock = 8us
   }
-  if ((gamepad & W4._BUTTON_RIGHT) > 0) {
-    x += 1
+  if (canMove && (gamepad & W4._BUTTON_RIGHT) > 0us && x <= 104us) {
+    babaDirection = Right
+    x += 24us
+    lock = 8us
   }
-  if ((gamepad & W4._BUTTON_UP) > 0) {
-    y -= 1
+  if (canMove && (gamepad & W4._BUTTON_UP) > 0us && y >= 32us) {
+    babaDirection = Up
+    y -= 24us
+    lock = 8us
   }
-  if ((gamepad & W4._BUTTON_DOWN) > 0) {
-    y += 1
+  if (canMove && (gamepad & W4._BUTTON_DOWN) > 0us && y <= 104us) {
+    babaDirection = Down
+    y += 24us
+    lock = 8us
   }
-
-  // Swap to color 2
-  W4.drawColors(2)
-  // Write the text
-  W4.text(itsDangerous, 24, 50)
 
   // Swap to color 3
-  W4.drawColors(3)
+  W4.drawColors(3us)
+  // Write the text
+  W4.text(baba, 44us, 2us)
+  W4.text(you, 92us, 2us)
+
+  // Swap to color 2
+  W4.drawColors(2us)
+  // Write the text
+  W4.text(_is, 76us, 2us)
+
+  // Swap to color 2
+  W4.drawColors(2us)
+
+  let (player, blitFlags) = match (babaDirection) {
+    Left when animAlt => (babaRight2, W4._BLIT_1BPP | W4._BLIT_FLIP_X),
+    Left => (babaRight, W4._BLIT_1BPP | W4._BLIT_FLIP_X),
+    Right when animAlt => (babaRight2, W4._BLIT_1BPP),
+    Right => (babaRight, W4._BLIT_1BPP),
+    Up when animAlt => (babaUp2, W4._BLIT_1BPP),
+    Up => (babaUp, W4._BLIT_1BPP),
+    Down when animAlt => (babaDown2, W4._BLIT_1BPP),
+    Down => (babaDown, W4._BLIT_1BPP),
+  }
+
   // Draw the sprite
-  W4.blit(smiley, x, y, 8, 8, W4._BLIT_1BPP)
+  W4.blit(player, x, y, 24us, 24us, blitFlags)
 
   // Play music
   if (measure < bass_len) {
-    let bass_notes = bass[measure]
-    for (let mut i = 0; i < arrayLen(bass_notes); i += 1) {
-      let m = bass_notes[i]
-      let wen = (m & 0xff0000) >> 16
-      let note = tones[(m & 0xff00) >> 8]
-      let duration = durations[m & 0xff]
+    let bass_notes = bass[Uint8.toNumber(measure)]
+    for (let mut i = 0us; i < arrayLen(bass_notes); i += 1us) {
+      let (wen, note, duration) = bass_notes[Uint8.toNumber(i)]
       if (frame == wen)
-        W4.tone(note, duration, _VOLUME_LEVEL, W4._TONE_TRIANGLE)
+        W4.tone(note, 0uS, duration, _VOLUME_LEVEL, W4._TONE_TRIANGLE)
     }
   }
   if (measure < drum_len) {
-    let drum_notes = drum[measure]
-    for (let mut i = 0; i < arrayLen(drum_notes); i += 1) {
-      let m = drum_notes[i]
-      let wen = (m & 0xff0000) >> 16
-      let note = tones[(m & 0xff00) >> 8]
-      let duration = durations[m & 0xff]
-      if (frame == wen) W4.tone(note, duration, _VOLUME_LEVEL, W4._TONE_PULSE1)
+    let drum_notes = drum[Uint8.toNumber(measure)]
+    for (let mut i = 0us; i < arrayLen(drum_notes); i += 1us) {
+      let (wen, note, duration) = drum_notes[Uint8.toNumber(i)]
+      if (frame == wen)
+        W4.tone(note, 0uS, duration, _VOLUME_LEVEL, W4._TONE_PULSE1)
     }
   }
   if (measure < hat_len) {
-    let hat_notes = hat[measure]
-    for (let mut i = 0; i < arrayLen(hat_notes); i += 1) {
-      let m = hat_notes[i]
-      let wen = (m & 0xff0000) >> 16
-      let note = tones[(m & 0xff00) >> 8]
-      // let duration = durations[m & 0xff]
-      if (frame == wen) W4.tone(note, _HAT_DURATION, 25l, W4._TONE_NOISE)
+    let hat_notes = hat[Uint8.toNumber(measure)]
+    for (let mut i = 0us; i < arrayLen(hat_notes); i += 1us) {
+      let (wen, note, duration) = hat_notes[Uint8.toNumber(i)]
+      if (frame == wen) W4.tone(note, 0uS, _HAT_DURATION, 50us, W4._TONE_NOISE)
     }
   }
   if (measure < viola_len) {
-    let viola_notes = viola[measure]
-    for (let mut i = 0; i < arrayLen(viola_notes); i += 1) {
-      let m = viola_notes[i]
-      let wen = (m & 0xff0000) >> 16
-      let note = tones[(m & 0xff00) >> 8]
-      let duration = durations[m & 0xff]
-      if (frame == wen) W4.tone(note, duration, _VOLUME_LEVEL, W4._TONE_PULSE2)
+    let viola_notes = viola[Uint8.toNumber(measure)]
+    for (let mut i = 0us; i < arrayLen(viola_notes); i += 1us) {
+      let (wen, note, duration) = viola_notes[Uint8.toNumber(i)]
+      if (frame == wen)
+        W4.tone(note, 0uS, duration, _VOLUME_LEVEL, W4._TONE_PULSE2)
     }
   }
 
-  frame += 1
+  frame += 1us
 }
